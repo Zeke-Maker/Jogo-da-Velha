@@ -16,6 +16,14 @@ export default function Campo() {
     setStatus(null);
 }
 
+  function mostrarJogador() {
+    if (estado == false) {
+      return "Vez do jogador X";
+    } else {
+      return "Vez do jogador O";
+    }
+  }
+
 
   function calcularVencedor() {
     if ((quadrados[0]=="X" && quadrados[1]=="X" && quadrados[2]=="X")
@@ -79,7 +87,10 @@ quadrados[8]!=null
       <Square valor={quadrados[7]} func={() =>handleClick(7)}/>
       <Square valor={quadrados[8]} func={() =>handleClick(8)}/>  
     </div>
+    <div><h2>{mostrarJogador()}</h2></div>
     <div><h1>{status}</h1></div>
     <div><button onClick={reiniciarJogo}>Reiniciar</button></div>
+
+
   </>;
 }
