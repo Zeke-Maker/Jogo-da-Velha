@@ -27,20 +27,20 @@ export default function Campo() {
     }
   }
 
-  function calcularVencedor() {
+  function calcularVencedor(tabuleiro) {
     /* Jogador 1 */
     if (
       /*Linha*/
-      (quadrados[0] == "X" && quadrados[1] == "X" && quadrados[2] == "X") ||
-      (quadrados[3] == "X" && quadrados[4] == "X" && quadrados[5] == "X") ||
-      (quadrados[6] == "X" && quadrados[7] == "X" && quadrados[8] == "X") ||
+      (tabuleiro[0] == "X" && tabuleiro[1] == "X" && tabuleiro[2] == "X") ||
+      (tabuleiro[3] == "X" && tabuleiro[4] == "X" && tabuleiro[5] == "X") ||
+      (tabuleiro[6] == "X" && tabuleiro[7] == "X" && tabuleiro[8] == "X") ||
       /*Coluna*/
-      (quadrados[0] == "X" && quadrados[3] == "X" && quadrados[6] == "X") ||
-      (quadrados[1] == "X" && quadrados[4] == "X" && quadrados[7] == "X") ||
-      (quadrados[2] == "X" && quadrados[5] == "X" && quadrados[8] == "X") ||
+      (tabuleiro[0] == "X" && tabuleiro[3] == "X" && tabuleiro[6] == "X") ||
+      (tabuleiro[1] == "X" && tabuleiro[4] == "X" && tabuleiro[7] == "X") ||
+      (tabuleiro[2] == "X" && tabuleiro[5] == "X" && tabuleiro[8] == "X") ||
       /*Diagonal*/
-      (quadrados[0] == "X" && quadrados[4] == "X" && quadrados[8] == "X") ||
-      (quadrados[2] == "X" && quadrados[4] == "X" && quadrados[6] == "X")
+      (tabuleiro[0] == "X" && tabuleiro[4] == "X" && tabuleiro[8] == "X") ||
+      (tabuleiro[2] == "X" && tabuleiro[4] == "X" && tabuleiro[6] == "X")
     ) {
       console.log("Jogador 1 Venceu!");
       return "Jogador 1 venceu!";
@@ -48,29 +48,29 @@ export default function Campo() {
     /* Jogador 2 */
     else if (
       /*Linha*/
-      (quadrados[0] == "O" && quadrados[1] == "O" && quadrados[2] == "O") ||
-      (quadrados[3] == "O" && quadrados[4] == "O" && quadrados[5] == "O") ||
-      (quadrados[6] == "O" && quadrados[7] == "O" && quadrados[8] == "O") ||
+      (tabuleiro[0] == "O" && tabuleiro[1] == "O" && tabuleiro[2] == "O") ||
+      (tabuleiro[3] == "O" && tabuleiro[4] == "O" && tabuleiro[5] == "O") ||
+      (tabuleiro[6] == "O" && tabuleiro[7] == "O" && tabuleiro[8] == "O") ||
       /*Coluna*/
-      (quadrados[0] == "O" && quadrados[3] == "O" && quadrados[6] == "O") ||
-      (quadrados[1] == "O" && quadrados[4] == "O" && quadrados[7] == "O") ||
-      (quadrados[2] == "O" && quadrados[5] == "O" && quadrados[8] == "O") ||
+      (tabuleiro[0] == "O" && tabuleiro[3] == "O" && tabuleiro[6] == "O") ||
+      (tabuleiro[1] == "O" && tabuleiro[4] == "O" && tabuleiro[7] == "O") ||
+      (tabuleiro[2] == "O" && tabuleiro[5] == "O" && tabuleiro[8] == "O") ||
       /*Diagonal*/    
-      (quadrados[0] == "O" && quadrados[4] == "O" && quadrados[8] == "O") ||
-      (quadrados[2] == "O" && quadrados[4] == "O" && quadrados[6] == "O") 
+      (tabuleiro[0] == "O" && tabuleiro[4] == "O" && tabuleiro[8] == "O") ||
+      (tabuleiro[2] == "O" && tabuleiro[4] == "O" && tabuleiro[6] == "O") 
     ) {
       console.log("Jogador 2 Venceu!");
       return "Jogador 2 venceu!";
     } else if (
-      quadrados[0] != null &&
-      quadrados[1] != null &&
-      quadrados[2] != null &&
-      quadrados[3] != null &&
-      quadrados[4] != null &&
-      quadrados[5] != null &&
-      quadrados[6] != null &&
-      quadrados[7] != null &&
-      quadrados[8] != null
+      tabuleiro[0] != null &&
+      tabuleiro[1] != null &&
+      tabuleiro[2] != null &&
+      tabuleiro[3] != null &&
+      tabuleiro[4] != null &&
+      tabuleiro[5] != null &&
+      tabuleiro[6] != null &&
+      tabuleiro[7] != null &&
+      tabuleiro[8] != null
     ) {
       console.log("Deu empate!");
       return "Deu empate!";
@@ -92,7 +92,7 @@ export default function Campo() {
     setQuadrados(quadradoTemp);
     setEstado(!estado);
 
-    setStatus(calcularVencedor());
+    setStatus(calcularVencedor(quadradoTemp));
   }
   return (
     <>
