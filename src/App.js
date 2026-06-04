@@ -10,6 +10,7 @@ function Square({ valor, func, vencedor }) {
 }
 
 export default function Campo() {
+  const [historico, setHistorico] = useState([]);
   const [quadrados, setQuadrados] = useState(Array(9).fill(null));
   const [estado, setEstado] = useState(false);
   const [status, setStatus] = useState(null);
@@ -20,6 +21,7 @@ export default function Campo() {
     setEstado(false);
     setStatus(null);
     setCasasVencedoras([]);
+    setHistorico([]);
   }
 
   function mostrarJogador() {
@@ -144,13 +146,18 @@ export default function Campo() {
       return;
     }
 
+    let jogador;
+
     if (estado == false) {
       quadradoTemp[i] = "X";
+      jogador = "X";
     } else {
       quadradoTemp[i] = "O";
+      jogador = "O";
     }
     setQuadrados(quadradoTemp);
     setEstado(!estado);
+    setHistorico([...historico, `jogada ${historico.length + 1}: ${jogador} na posição ${i}`])
 
     setStatus(calcularVencedor(quadradoTemp));
   }
@@ -179,6 +186,10 @@ export default function Campo() {
       </div>
       <div>
         <button onClick={reiniciarJogo}>Reiniciar</button>
+      </div>
+      <div>
+      <h3>Histórico de jogadas:</h3>
+      <ul>{historico.map((jogada, index) => (<li key={index}>{jogada}</li>))}</ul>
       </div>
     </>
   );
