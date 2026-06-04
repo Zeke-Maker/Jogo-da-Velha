@@ -136,6 +136,10 @@ export default function Campo() {
 
   function handleClick(i) {
     const quadradoTemp = quadrados.slice();
+    /*Bloqueio de jogadas após encerramento da partida*/
+    if (status != null) {
+      return;
+    }
     if (quadradoTemp[i] != null) {
       return;
     }
