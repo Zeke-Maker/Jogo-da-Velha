@@ -16,13 +16,9 @@ export default function App() {
   const [estado, setEstado] = useState(false);
   const [status, setStatus] = useState(null);
   const [CasasVencedoras, setCasasVencedoras] = useState([]);
-
-  // 🔧 REQUISITO 5 (Placar)
   const [placarX, setPlacarX] = useState(0);
   const [placarO, setPlacarO] = useState(0);
   const [empates, setEmpates] = useState(0);
-
-  // 🔧 REQUISITO 9 (Máquina)
   const [vsMaquina, setVsMaquina] = useState(true);
 
   function reiniciarJogo() {
@@ -158,7 +154,6 @@ export default function App() {
     const resultado = calcularVencedor(quadradoTemp);
     setStatus(resultado);
 
-    // 🔧 Atualiza placar
     if (resultado === "Jogador 1 venceu!") {
       setPlacarX(placarX + 1);
     } else if (resultado === "Jogador 2 venceu!") {
@@ -167,7 +162,6 @@ export default function App() {
       setEmpates(empates + 1);
     }
 
-    // 🔧 Jogada da máquina (simples)
     if (vsMaquina && resultado == null && jogador === "X") {
       setTimeout(() => {
         jogadaMaquina(quadradoTemp);
@@ -175,11 +169,16 @@ export default function App() {
     }
   }
 
-  // 🔧 Máquina simples
   function jogadaMaquina(tabuleiroAtual) {
-    const vazios = tabuleiroAtual
-      .map((val, idx) => (val == null ? idx : null))
-      .filter((val) => val != null);
+  if (status != null) return;
+
+  const vazios = [];
+
+    for (let i = 0; i < 9; i++) {
+      if (tabuleiroAtual[i] == null) {
+        vazios.push(i);
+      }
+    }
 
     if (vazios.length === 0) return;
 
@@ -187,7 +186,6 @@ export default function App() {
 
     handleClick(random);
   }
-
   function desfazerJogada() {
     if (historicoTabuleiros.length <= 1) return;
 
