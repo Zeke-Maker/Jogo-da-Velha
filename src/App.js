@@ -170,9 +170,9 @@ export default function App() {
   }
 
   function jogadaMaquina(tabuleiroAtual) {
-  if (status != null) return;
+    if (status != null) return;
 
-  const vazios = [];
+    const vazios = [];
 
     for (let i = 0; i < 9; i++) {
       if (tabuleiroAtual[i] == null) {
@@ -183,8 +183,28 @@ export default function App() {
     if (vazios.length === 0) return;
 
     const random = vazios[Math.floor(Math.random() * vazios.length)];
+    const novoTabuleiro = tabuleiroAtual.slice();
 
-    handleClick(random);
+    novoTabuleiro[random] = "O";
+
+    setQuadrados(novoTabuleiro);
+    setEstado(false);
+
+    setHistoricoTexto(prev => [
+      ...prev,
+      `jogada ${prev.length + 1}: O na posição ${random}`
+    ]);
+
+    setHistoricoTabuleiros(prev => [...prev, novoTabuleiro]);
+
+    const resultado = calcularVencedor(novoTabuleiro);
+    setStatus(resultado);
+
+    if (resultado === "Jogador 2 venceu!") {
+      setPlacarO(prev => prev + 1);
+    } else if (resultado === "Deu empate!") {
+      setEmpates(prev => prev + 1);
+    }
   }
   function desfazerJogada() {
     if (historicoTabuleiros.length <= 1) return;
