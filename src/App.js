@@ -47,112 +47,59 @@ export default function App() {
     carregarIniciais();
   }, []);
 
-    function reiniciarJogo() {
-      setQuadrados(Array(9).fill(null));
-      setEstado(false);
-      setStatus(null);
-      setCasasVencedoras([]);
-      setHistoricoTexto([]);
-      setHistoricoTabuleiros([Array(9).fill(null)]);
-    }
+    async function handleAlterarPokemon() {
+    setMensagemErro(""); // Limpa mensagem de erro anterior
 
-  function mostrarJogador() {
-    if (estado == false) {
-      return "Vez do jogador X";
-    } else {
-      return "Vez do jogador O";
+    try {
+      const dadosP1 = await buscarPokemon(nome);
+      const dadosP2 = await buscarPokemon(nome2);
+
+      setPokemon(dadosP1);
+      setPokemon2(dadosP2);
+      reiniciarPartida();
+    } catch (erro) {
+      // Exibe a mensagem "Pokémon não encontrado." se falhar
+      setMensagemErro(erro.message);
     }
   }
 
-  function calcularVencedor(tabuleiro) {
-    if (
-      (tabuleiro[0] == "X" && tabuleiro[1] == "X" && tabuleiro[2] == "X")
-    ) {
-      setCasasVencedoras([0, 1, 2]);
-      return "Jogador 1 venceu!";
-    } else if (
-      (tabuleiro[3] == "X" && tabuleiro[4] == "X" && tabuleiro[5] == "X")
-    ) {
-      setCasasVencedoras([3, 4, 5]);
-      return "Jogador 1 venceu!";
-    } else if (
-      (tabuleiro[6] == "X" && tabuleiro[7] == "X" && tabuleiro[8] == "X")
-    ) {
-      setCasasVencedoras([6, 7, 8]);
-      return "Jogador 1 venceu!";
-    } else if (
-      (tabuleiro[0] == "X" && tabuleiro[3] == "X" && tabuleiro[6] == "X")
-    ) {
-      setCasasVencedoras([0, 3, 6]);
-      return "Jogador 1 venceu!";
-    } else if (
-      (tabuleiro[1] == "X" && tabuleiro[4] == "X" && tabuleiro[7] == "X")
-    ) {
-      setCasasVencedoras([1, 4, 7]);
-      return "Jogador 1 venceu!";
-    } else if (
-      (tabuleiro[2] == "X" && tabuleiro[5] == "X" && tabuleiro[8] == "X")
-    ) {
-      setCasasVencedoras([2, 5, 8]);
-      return "Jogador 1 venceu!";
-    } else if (
-      (tabuleiro[0] == "X" && tabuleiro[4] == "X" && tabuleiro[8] == "X")
-    ) {
-      setCasasVencedoras([0, 4, 8]);
-      return "Jogador 1 venceu!";
-    } else if (
-      (tabuleiro[2] == "X" && tabuleiro[4] == "X" && tabuleiro[6] == "X")
-    ) {
-      setCasasVencedoras([2, 4, 6]);
-      return "Jogador 1 venceu!";
-    }
+  // Lógica das jogadas no tabuleiro
+  function lidarComClique(index) {
+    if (tabuleiro[index] || vencedor) return;
 
-    else if (
-      (tabuleiro[0] == "O" && tabuleiro[1] == "O" && tabuleiro[2] == "O")
-    ) {
-      setCasasVencedoras([0, 1, 2]);
-      return "Jogador 2 venceu!";
-    } else if (
-      (tabuleiro[3] == "O" && tabuleiro[4] == "O" && tabuleiro[5] == "O")
-    ) {
-      setCasasVencedoras([3, 4, 5]);
-      return "Jogador 2 venceu!";
-    } else if (
-      (tabuleiro[6] == "O" && tabuleiro[7] == "O" && tabuleiro[8] == "O")
-    ) {
-      setCasasVencedoras([6, 7, 8]);
-      return "Jogador 2 venceu!";
-    } else if (
-      (tabuleiro[0] == "O" && tabuleiro[3] == "O" && tabuleiro[6] == "O")
-    ) {
-      setCasasVencedoras([0, 3, 6]);
-      return "Jogador 2 venceu!";
-    } else if (
-      (tabuleiro[1] == "O" && tabuleiro[4] == "O" && tabuleiro[7] == "O")
-    ) {
-      setCasasVencedoras([1, 4, 7]);
-      return "Jogador 2 venceu!";
-    } else if (
-      (tabuleiro[2] == "O" && tabuleiro[5] == "O" && tabuleiro[8] == "O")
-    ) {
-      setCasasVencedoras([2, 5, 8]);
-      return "Jogador 2 venceu!";
-    } else if (
-      (tabuleiro[0] == "O" && tabuleiro[4] == "O" && tabuleiro[8] == "O")
-    ) {
-      setCasasVencedoras([0, 4, 8]);
-      return "Jogador 2 venceu!";
-    } else if (
-      (tabuleiro[2] == "O" && tabuleiro[4] == "O" && tabuleiro[6] == "O")
-    ) {
-      setCasasVencedoras([2, 4, 6]);
-      return "Jogador 2 venceu!";
-    } else if (
-      tabuleiro.every(casa => casa != null)
-    ) {
-      return "Deu empate!";
-    }
+    const novoTabuleiro = [...tabuleiro];
+    // Grava quem jogou na posição ("P1" ou "P2")
+    novoTabuleiro[index] = turnoJogador1 ? "P1" : "P2";
+    setTabuleiro(novoTabuleiro);
 
+    const ganhador = verificarVencedor(novoTabuleiro);
+    if (ganhador) {
+      setVencedor(ganhador === "P1" ? pokemon?.name : pokemon2?.name);
+    } else if (novoTabuleiro.every((casa) => casa !== null)) {
+      setVencedor("Empate");
+    } else {
+      setTurnoJogador1(!turnoJogador1); // Alterna o turno
+    }
+  }
+
+  function reiniciarPartida() {
+    setTabuleiro(Array(9).fill(null));
+    setTurnoJogador1(true);
+    setVencedor(null);
+  }
+
+  function verificarVencedor(quadrados) {
+    const combinacoes = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    for (let i = 0; i < combinacoes.length; i++) {
+      const [a, b, c] = combinacoes[i];
+      if (quadrados[a] && quadrados[a] === quadrados[b] && quadrados[a] === quadrados[c]) {
+        return quadrados[a];
+      }
+    }
     return null;
   }
 
