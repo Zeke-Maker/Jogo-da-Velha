@@ -1,22 +1,52 @@
-  import { useState } from "react";
+import { useState, useEffect } from "react";
+import "./styles.css";
 
-  function Square({ valor, func, vencedor }) {
-    return (
-      <button className={`square ${vencedor ? "vencedor" : ""}`}
-        onClick={func}>
-        {valor}
-      </button>
-    );
+export default function App() {
+  const [pokemon, setPokemon] = useState(null);
+  const [pokemon2, setPokemon2] = useState(null);
+  
+  const [nome, setNome] = useState("pikachu");
+  const [nome2, setNome2] = useState("bulbasaur");
+
+  // Estados necessários para o Jogo da Velha
+  const [tabuleiro, setTabuleiro] = useState(Array(9).fill(null));
+  const [turnoJogador1, setTurnoJogador1] = useState(true); // true = P1, false = P2
+  const [vencedor, setVencedor] = useState(null);
+  const [mensagemErro, setMensagemErro] = useState("");
+
+  async function buscarPokemon(nomePokemon) {
+    const nomeFormatado = nomePokemon.toLowerCase().trim();
+
+    if (!nomeFormatado) {
+      throw new Error("Por favor, digite o nome de um Pokémon.");
+    }
+
+    const resposta = await fetch(`https://pokeapi.co/api/v2/pokemon/${nomeFormatado}`);
+    
+    if (!resposta.ok) {
+      throw new Error("Pokémon não encontrado.");
+    }
+
+    const dados = await resposta.json();
+    return dados;
   }
 
-  export default function Campo() {
-    const [historicoTexto, setHistoricoTexto] = useState([]);
-    const [historicoTabuleiros, setHistoricoTabuleiros] = useState([Array(9).fill(null)]);
-    const [quadrados, setQuadrados] = useState(Array(9).fill(null));
-    const [estado, setEstado] = useState(false);
-    const [status, setStatus] = useState(null);
-    const [CasasVencedoras, setCasasVencedoras] = useState([]);
+  useEffect(() => {
+    async function carregarIniciais() {
+      try {
+        const dadosP1 = await buscarPokemon("pikachu");
+        const dadosP2 = await buscarPokemon("bulbasaur");
 
+        setPokemon(dadosP1);
+        setPokemon2(dadosP2);
+      } catch (erro) {
+        setMensagemErro("Erro ao carregar Pokémon iniciais.");
+      }
+    }
+
+    carregarIniciais();
+  }, []);
+  
     function reiniciarJogo() {
       setQuadrados(Array(9).fill(null));
       setEstado(false);
