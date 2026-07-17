@@ -32,17 +32,20 @@ export default function App() {
   }
 
   useEffect(() => {
-    async function carregarIniciais() {
-      try {
-        const dadosP1 = await buscarPokemon("pikachu");
-        const dadosP2 = await buscarPokemon("bulbasaur");
+  async function carregarIniciais() {
+    try {
+      const dadosP1 = await buscarPokemon("pikachu");
+      const dadosP2 = await buscarPokemon("bulbasaur");
 
-        setPokemon(dadosP1);
-        setPokemon2(dadosP2);
-      } catch (erro) {
-        setMensagemErro("Erro ao carregar Pokémon iniciais.");
-      }
+      setPokemon(dadosP1);
+      setPokemon2(dadosP2);
+    } catch (erro) {
+      setMensagemErro("Erro ao carregar Pokémon iniciais.");
     }
+  }
+
+  carregarIniciais();
+}, []);
 
     useEffect(() => {
   if (!turnoJogador1 && !vencedor) {
@@ -54,10 +57,7 @@ export default function App() {
     return () => clearTimeout(timer);
   }
 
-}, [turnoJogador1]);
-
-    carregarIniciais();
-  }, []);
+}, [turnoJogador1, tabuleiro, vencedor]);
 
   async function handleAlterarPokemon() {
     setMensagemErro(""); // Limpa mensagem de erro anterior
@@ -77,7 +77,7 @@ export default function App() {
 
   // Lógica das jogadas no tabuleiro
   function lidarComClique(index) {
-    if (!turnoJogador1) return;
+    setTurnoJogador1(false);
 
     if (tabuleiro[index] || vencedor) return;
 
