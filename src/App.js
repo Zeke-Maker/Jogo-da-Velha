@@ -103,97 +103,70 @@ export default function App() {
     return null;
   }
 
-  function handleClick(i) {
-    const quadradoTemp = quadrados.slice();
+  return (
+    <div className="container_principal">
+      <h1>Pokémon Tic-Tac-Toe</h1>
 
-    if (status != null) return;
-    if (quadradoTemp[i] != null) return;
+      {/* 3. Dois campos para escolher os Pokémon */}
+      <form onSubmit={(e) => e.preventDefault()} className="pokemon_form">
+        <div className="campo_input">
+          <label>Jogador 1:</label>
+          <input
+            id="pokemon_input"
+            type="text"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            placeholder="Escreva o nome de um Pokémon"
+          />
+        </div>
 
-    let jogador;
+        <div className="campo_input">
+          <label>Jogador 2:</label>
+          <input
+            id="pokemon_input_2"
+            type="text"
+            value={nome2}
+            onChange={(e) => setNome2(e.target.value)}
+            placeholder="Escreva o nome de um Pokémon"
+          />
+        </div>
 
-    if (estado == false) {
-      quadradoTemp[i] = "X";
-      jogador = "X";
-    } else {
-      quadradoTemp[i] = "O";
-      jogador = "O";
-    }
+        <button type="button" onClick={handleAlterarPokemon} className="btn_buscar">
+          Alterar Pokémon
+        </button>
+      </form>
 
-    setQuadrados(quadradoTemp);
-    setEstado(!estado);
-    setHistoricoTexto([...historicoTexto, `jogada ${historicoTexto.length + 1}: ${jogador} na posição ${i}`]);
-    setHistoricoTabuleiros([...historicoTabuleiros, quadradoTemp]);
+      {/* 5. Exibição de mensagem de erro */}
+      {mensagemErro && <p className="mensagem_erro">{mensagemErro}</p>}
 
-    const resultado = calcularVencedor(quadradoTemp);
-    setStatus(resultado);
+      <div className="status_jogo">
+        {vencedor ? (
+          <h2>{vencedor === "Empate" ? "Deu Velha! 🤝" : `Vitória de: ${vencedor.toUpperCase()} 🎉`}</h2>
+        ) : (
+          <h3>Vez de: {turnoJogador1 ? pokemon?.name?.toUpperCase() : pokemon2?.name?.toUpperCase()}</h3>
+        )}
+      </div>
 
-    if (resultado === "Jogador 1 venceu!") {
-      setPlacarX(placarX + 1);
-    } else if (resultado === "Jogador 2 venceu!") {
-      setPlacarO(placarO + 1);
-    } else if (resultado === "Deu empate!") {
-      setEmpates(empates + 1);
-    }
+      {/* 2. Tabuleiro exibindo as imagens no lugar de X e O */}
+      <div className="tabuleiro">
+        {tabuleiro.map((casa, index) => (
+          <button key={index} type="button" className="casa_tabuleiro" onClick={() => lidarComClique(index)}>
+            {casa === "P1" && pokemon?.sprites?.front_default && (
+              <img src={pokemon.sprites.front_default} alt={pokemon.name} className="imagem_peca" />
+            )}
+            {casa === "P2" && pokemon2?.sprites?.front_default && (
+              <img src={pokemon2.sprites.front_default} alt={pokemon2.name} className="imagem_peca" />
+            )}
+          </button>
+        ))}
+      </div>
 
-    if (vsMaquina && resultado == null && jogador === "X") {
-      setTimeout(() => {
-        jogadaMaquina(quadradoTemp);
-      }, 500);
-    }
-  }
-
-  function jogadaMaquina(tabuleiroAtual) {
-    if (status != null) return;
-
-    const vazios = [];
-
-    for (let i = 0; i < 9; i++) {
-      if (tabuleiroAtual[i] == null) {
-        vazios.push(i);
-      }
-    }
-
-    if (vazios.length === 0) return;
-
-    const random = vazios[Math.floor(Math.random() * vazios.length)];
-    const novoTabuleiro = tabuleiroAtual.slice();
-
-    novoTabuleiro[random] = "O";
-
-    setQuadrados(novoTabuleiro);
-    setEstado(false);
-
-    setHistoricoTexto(prev => [
-      ...prev,
-      `jogada ${prev.length + 1}: O na posição ${random}`
-    ]);
-
-    setHistoricoTabuleiros(prev => [...prev, novoTabuleiro]);
-
-    const resultado = calcularVencedor(novoTabuleiro);
-    setStatus(resultado);
-
-    if (resultado === "Jogador 2 venceu!") {
-      setPlacarO(prev => prev + 1);
-    } else if (resultado === "Deu empate!") {
-      setEmpates(prev => prev + 1);
-    }
-  }
-  function desfazerJogada() {
-    if (historicoTabuleiros.length <= 1) return;
-
-    const novosTabuleiros = historicoTabuleiros.slice(0, historicoTabuleiros.length - 1);
-    const tabuleiroAnterior = novosTabuleiros[novosTabuleiros.length - 1];
-
-    const novosTextos = historicoTexto.slice(0, historicoTexto.length - 1);
-
-    setHistoricoTabuleiros(novosTabuleiros);
-    setHistoricoTexto(novosTextos);
-    setQuadrados(tabuleiroAnterior);
-    setEstado(!estado);
-    setStatus(null);
-    setCasasVencedoras([]);
-  }
+      <button type="button" onClick={reiniciarPartida} className="btn_reiniciar">
+        Reiniciar Partida
+      </button>
+    </div>
+  );
+}
 
   return (
     <>
@@ -240,4 +213,3 @@ export default function App() {
       </div>
     </>
   );
-}
