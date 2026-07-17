@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import "./styles.css";
 
 export default function App() {
-  
-  const [pokemon, setPokemon] = useState(null);  
+
+  const [pokemon, setPokemon] = useState(null);
   const [pokemon2, setPokemon2] = useState(null);
-  
-  const [nome, setNome] = useState("pikachu");   
+
+  const [nome, setNome] = useState("pikachu");
   const [nome2, setNome2] = useState("bulbasaur")
 
   const [tabuleiro, setTabuleiro] = useState(Array(9).fill(null));
@@ -22,7 +22,7 @@ export default function App() {
     }
 
     const resposta = await fetch(`https://pokeapi.co/api/v2/pokemon/${nomeFormatado}`);
-    
+
     if (!resposta.ok) {
       throw new Error("Pokémon não encontrado.");
     }
@@ -47,7 +47,7 @@ export default function App() {
     carregarIniciais();
   }, []);
 
-    async function handleAlterarPokemon() {
+  async function handleAlterarPokemon() {
     setMensagemErro(""); // Limpa mensagem de erro anterior
 
     try {
@@ -141,7 +141,11 @@ export default function App() {
 
       <div className="status_jogo">
         {vencedor ? (
-          <h2>{vencedor === "Empate" ? "Deu Velha! 🤝" : `Vitória de: ${vencedor.toUpperCase()} 🎉`}</h2>
+          <h2>
+            {vencedor === "Empate"
+              ? "Deu Velha! 🤝"
+              : `Vitória de: ${vencedor.toUpperCase()} 🎉`}
+          </h2>
         ) : (
           <h3>Vez de: {turnoJogador1 ? pokemon?.name?.toUpperCase() : pokemon2?.name?.toUpperCase()}</h3>
         )}
@@ -167,49 +171,3 @@ export default function App() {
     </div>
   );
 }
-
-  return (
-    <>
-      <div className="board-row">
-        <Square valor={quadrados[0]} func={() => handleClick(0)} vencedor={CasasVencedoras.includes(0)} />
-        <Square valor={quadrados[1]} func={() => handleClick(1)} vencedor={CasasVencedoras.includes(1)} />
-        <Square valor={quadrados[2]} func={() => handleClick(2)} vencedor={CasasVencedoras.includes(2)} />
-      </div>
-
-      <div className="board-row">
-        <Square valor={quadrados[3]} func={() => handleClick(3)} vencedor={CasasVencedoras.includes(3)} />
-        <Square valor={quadrados[4]} func={() => handleClick(4)} vencedor={CasasVencedoras.includes(4)} />
-        <Square valor={quadrados[5]} func={() => handleClick(5)} vencedor={CasasVencedoras.includes(5)} />
-      </div>
-
-      <div className="board-row">
-        <Square valor={quadrados[6]} func={() => handleClick(6)} vencedor={CasasVencedoras.includes(6)} />
-        <Square valor={quadrados[7]} func={() => handleClick(7)} vencedor={CasasVencedoras.includes(7)} />
-        <Square valor={quadrados[8]} func={() => handleClick(8)} vencedor={CasasVencedoras.includes(8)} />
-      </div>
-
-      <h2>{mostrarJogador()}</h2>
-      <h1>{status}</h1>
-
-      <button onClick={reiniciarJogo}>Reiniciar</button>
-      <button onClick={desfazerJogada} disabled={historicoTabuleiros.length <= 1}>
-        Desfazer Jogada
-      </button>
-
-      <div>
-        <h3>Placar</h3>
-        <p>X: {placarX}</p>
-        <p>O: {placarO}</p>
-        <p>Empates: {empates}</p>
-      </div>
-
-      <div>
-        <h3>Histórico de jogadas:</h3>
-        <ul>
-          {historicoTexto.map((jogada, index) => (
-            <li key={index}>{jogada}</li>
-          ))}
-        </ul>
-      </div>
-    </>
-  );
