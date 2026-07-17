@@ -44,6 +44,18 @@ export default function App() {
       }
     }
 
+    useEffect(() => {
+  if (!turnoJogador1 && !vencedor) {
+
+    const timer = setTimeout(() => {
+      maquina();
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }
+
+}, [turnoJogador1]);
+
     carregarIniciais();
   }, []);
 
@@ -65,6 +77,8 @@ export default function App() {
 
   // Lógica das jogadas no tabuleiro
   function lidarComClique(index) {
+    if (!turnoJogador1) return;
+
     if (tabuleiro[index] || vencedor) return;
 
     const novoTabuleiro = [...tabuleiro];
@@ -81,6 +95,38 @@ export default function App() {
       setTurnoJogador1(!turnoJogador1); // Alterna o turno
     }
   }
+  
+  // Jogador 2
+  function maquina() {
+  if (vencedor) return;
+
+  // Procura as casas vazias
+  const casasLivres = tabuleiro
+    .map((casa, index) => (casa === null ? index : null))
+    .filter((casa) => casa !== null);
+
+  if (casasLivres.length === 0) return;
+
+  // Escolhe uma casa aleatória
+  const indice =
+    casasLivres[Math.floor(Math.random() * casasLivres.length)];
+
+  const novoTabuleiro = [...tabuleiro];
+
+  novoTabuleiro[indice] = "P2";
+
+  setTabuleiro(novoTabuleiro);
+
+  const ganhador = verificarVencedor(novoTabuleiro);
+
+  if (ganhador) {
+    setVencedor(pokemon2?.name);
+  } else if (novoTabuleiro.every((casa) => casa !== null)) {
+    setVencedor("Empate");
+  } else {
+    setTurnoJogador1(true);
+  }
+}
 
   function reiniciarPartida() {
     setTabuleiro(Array(9).fill(null));
