@@ -96,3 +96,7 @@
 .btn_reiniciar:hover {
   background-color: #e6b800;
 }
+
+.casa_tabuleiro:disabled {
+  cursor: not-allowed;
+}

@@ -14,6 +14,8 @@ export default function App() {
   const [vencedor, setVencedor] = useState(null);
   const [mensagemErro, setMensagemErro] = useState("");
 
+  const [bloquearJogada, setBloquearJogada] = useState(false);
+
   async function buscarPokemon(nomePokemon) {
     const nomeFormatado = nomePokemon.toLowerCase().trim();
 
@@ -77,9 +79,12 @@ export default function App() {
 
   // Lógica das jogadas no tabuleiro
   function lidarComClique(index) {
-    setTurnoJogador1(false);
+  // Se a máquina estiver jogando, ignora qualquer clique
+  if (bloquearJogada) return;
 
-    if (tabuleiro[index] || vencedor) return;
+  if (!turnoJogador1) return;
+
+  if (tabuleiro[index] || vencedor) return;
 
     const novoTabuleiro = [...tabuleiro];
     // Grava quem jogou na posição ("P1" ou "P2")
@@ -92,8 +97,9 @@ export default function App() {
     } else if (novoTabuleiro.every((casa) => casa !== null)) {
       setVencedor("Empate");
     } else {
-      setTurnoJogador1(!turnoJogador1); // Alterna o turno
-    }
+  setBloquearJogada(true);   // Bloqueia novos cliques
+  setTurnoJogador1(false);   // Passa a vez para a máquina
+}
   }
   
   // Jogador 2
@@ -119,13 +125,18 @@ export default function App() {
 
   const ganhador = verificarVencedor(novoTabuleiro);
 
-  if (ganhador) {
-    setVencedor(pokemon2?.name);
-  } else if (novoTabuleiro.every((casa) => casa !== null)) {
-    setVencedor("Empate");
-  } else {
-    setTurnoJogador1(true);
-  }
+if (ganhador) {
+  setVencedor(pokemon2?.name);
+  setBloquearJogada(false);
+}
+else if (novoTabuleiro.every((casa) => casa !== null)) {
+  setVencedor("Empate");
+  setBloquearJogada(false);
+}
+else {
+  setTurnoJogador1(true);
+  setBloquearJogada(false);
+}
 }
 
   function reiniciarPartida() {
@@ -200,7 +211,7 @@ export default function App() {
       {/* 2. Tabuleiro exibindo as imagens no lugar de X e O */}
       <div className="tabuleiro">
         {tabuleiro.map((casa, index) => (
-          <button key={index} type="button" className="casa_tabuleiro" onClick={() => lidarComClique(index)}>
+          <button key={index} type="button" className="casa_tabuleiro" onClick={() => lidarComClique(index)} disabled={bloquearJogada}>
             {casa === "P1" && pokemon?.sprites?.front_default && (
               <img src={pokemon.sprites.front_default} alt={pokemon.name} className="imagem_peca" />
             )}
